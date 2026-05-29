@@ -3,171 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notepad Lite + Neon Lights ✨</title>
+<title>Notepad Lite - Legacy Edition ✨</title>
 <style>
+  /* Reset básico */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --win-bg: #f0f0f0;
-    --win-border: #a0a0a0;
-    --win-btn: linear-gradient(to bottom, #ffffff 0%, #e1e1e1 100%);
+    --win-border: #8e8f91;
+    --win-btn: linear-gradient(to bottom, #fcfcfc 0%, #e1e1e1 100%);
     --accent: #0078d7;
-    /* Colores de las luces */
-    --glow-1: rgba(0, 255, 136, 0.15);
-    --glow-2: rgba(136, 68, 255, 0.15);
-    --glow-3: rgba(0, 170, 255, 0.15);
   }
 
   body {
     min-height: 100vh;
-    background-color: #0e1217; /* Fondo oscuro para que resalten las luces */
+    /* Gradiente estático que imita luces sin consumir CPU */
+    background: #0e1217 radial-gradient(circle at 0% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(136, 68, 255, 0.1) 0%, transparent 40%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    color: #333;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
     padding: 10px;
-    overflow: hidden;
   }
 
-  /* --- LUCES DE FONDO (LITE) --- */
-  .light-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-  }
-  .blob {
-    position: absolute;
-    width: 40vw;
-    height: 40vw;
-    border-radius: 50%;
-    filter: blur(80px);
-    animation: move 20s infinite alternate;
-    opacity: 0.6;
-  }
-  .blob-1 { background: var(--glow-1); top: -10%; left: -10%; }
-  .blob-2 { background: var(--glow-2); bottom: -10%; right: -10%; animation-delay: -5s; }
-  .blob-3 { background: var(--glow-3); top: 30%; left: 30%; animation-duration: 25s; }
-
-  @keyframes move {
-    from { transform: translate(0, 0) scale(1); }
-    to { transform: translate(10%, 10%) scale(1.1); }
-  }
-
-  /* --- CONTENEDOR ESTILO AERO --- */
+  /* Contenedor optimizado (Sin Blur) */
   .container {
     width: min(900px, 98vw);
-    background: rgba(255, 255, 255, 0.9);
+    background: #ffffff; /* Sólido para máximo rendimiento */
     border: 1px solid var(--win-border);
-    backdrop-filter: blur(10px); /* Efecto Windows 7 Aero */
-    box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 15px var(--glow-3);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
-    border-radius: 5px;
+    border-radius: 4px;
   }
 
+  /* Cabecera estilo Windows 7 */
   .title {
-    background: linear-gradient(to bottom, #fcfcfc 0%, #e8e8e8 100%);
-    padding: 8px 12px;
-    font-size: 0.85rem;
+    background: linear-gradient(to bottom, #ebf2f9 0%, #d0def0 100%);
+    padding: 6px 12px;
+    font-size: 0.8rem;
     font-weight: 600;
-    border-bottom: 1px solid var(--win-border);
+    color: #1e395b;
+    border-bottom: 1px solid #91a7c4;
     display: flex;
     justify-content: space-between;
-    border-radius: 5px 5px 0 0;
+    border-radius: 4px 4px 0 0;
   }
 
+  /* Barra de herramientas */
   .toolbar {
-    background: #f5f5f5;
-    border-bottom: 1px solid #ddd;
-    padding: 6px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #d1d1d1;
+    padding: 5px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
+    gap: 6px;
   }
 
   .tool-group {
-    display: flex; gap: 5px; align-items: center;
-    padding-right: 8px; border-right: 1px solid #ccc;
+    display: flex; gap: 4px; align-items: center;
+    padding-right: 6px; border-right: 1px solid #ccc;
   }
+  .tool-group:last-child { border-right: none; }
 
   .tool-btn, .tool-select {
     background: var(--win-btn);
     border: 1px solid #adadad;
-    border-radius: 3px;
-    color: #333; font-size: 0.8rem;
-    padding: 4px 10px; cursor: pointer;
-    transition: all 0.2s;
+    border-radius: 2px;
+    color: #333; font-size: 0.75rem;
+    padding: 3px 8px; cursor: pointer;
   }
-  .tool-btn:hover { border-color: var(--accent); box-shadow: 0 0 8px rgba(0,120,215,0.3); }
+  .tool-btn:hover { border-color: #7eb4ea; background: #e5f1fb; }
 
-  /* Botones con luz especial */
-  #btnGlow { color: #8844ff; font-weight: bold; }
-  #btnGlow:hover { text-shadow: 0 0 5px #8844ff; }
-
+  /* Editor de alto rendimiento */
   #editor {
     width: 100%;
-    min-height: 450px;
-    padding: 30px;
+    min-height: 400px;
+    padding: 20px;
     outline: none;
-    font-size: 20px;
-    line-height: 1.6;
-    background: #fff;
+    font-size: 18px;
+    line-height: 1.5;
+    background: #ffffff;
     overflow-y: auto;
+    color: #000;
   }
-  #editor:empty::before { content: attr(data-placeholder); color: #bbb; }
+  #editor:empty::before { content: attr(data-placeholder); color: #999; }
+
+  /* Efectos visuales de texto (Sin filtros pesados) */
+  .glow-text {
+    text-shadow: 0 0 3px currentColor; /* Sombra ligera para PCs viejas */
+    font-weight: bold;
+  }
 
   .status {
-    background: #f0f0f0; padding: 5px 12px;
+    background: #f0f0f0; padding: 3px 10px;
     display: flex; justify-content: space-between;
-    font-size: 0.75rem; color: #666;
+    font-size: 0.7rem; color: #666;
     border-top: 1px solid #ccc;
   }
 
   .actions {
-    display: flex; gap: 10px; justify-content: flex-end;
-    padding: 15px 0; width: min(900px, 98vw);
+    display: flex; gap: 8px; justify-content: flex-end;
+    padding: 10px 0; width: min(900px, 98vw);
   }
 
   .action-btn {
-    padding: 8px 20px; border-radius: 3px;
+    padding: 5px 15px; border-radius: 2px;
     border: 1px solid #adadad; background: var(--win-btn);
-    font-size: 0.85rem; cursor: pointer;
-    font-weight: 600;
+    font-size: 0.8rem; cursor: pointer;
   }
-  .btn-save { border-color: #0078d7; background: #e1f5fe; color: #0078d7; }
-  .btn-save:hover { background: #0078d7; color: #fff; }
+  .btn-save { font-weight: bold; border-color: var(--accent); color: #005a9e; }
 
   .toast {
     position: fixed; bottom: 20px; background: #333; color: #fff;
-    padding: 10px 20px; border-radius: 4px; opacity: 0;
-    transition: opacity 0.3s; z-index: 100;
+    padding: 6px 15px; border-radius: 2px; opacity: 0;
+    transition: opacity 0.2s; z-index: 100; font-size: 0.8rem;
   }
   .toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 
-<!-- LUCES AMBIENTALES -->
-<div class="light-bg">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
-
 <div class="container">
   <div class="title">
-    <span>✨ Rainbow Notepad Lite (Neon Edition)</span>
-    <span id="fontLabel" style="font-weight:normal; font-size:0.75rem">Fuente: Segoe UI</span>
+    <span>✨ Rainbow Notepad Lite</span>
+    <span id="fontLabel" style="font-weight:normal; font-size:0.7rem">Segoe UI</span>
   </div>
   
   <div class="toolbar">
     <!-- Fuente -->
     <div class="tool-group">
-      <button class="tool-btn" id="btnLoadFont" style="background:#e8f5e9">📂 Importar</button>
+      <button class="tool-btn" id="btnLoadFont">📂 Abrir Fuente</button>
       <input type="file" id="fontInput" accept=".ttf,.otf,.woff" style="display:none">
       <select id="fontSelector" class="tool-select">
         <option value="'Segoe UI'">Segoe UI</option>
@@ -177,36 +144,33 @@
       </select>
     </div>
 
-    <!-- Luces y Efectos -->
+    <!-- Efectos -->
     <div class="tool-group">
       <button class="tool-btn" id="btnRainbow">🌈 Arcoíris</button>
       <button class="tool-btn" id="btnGlow">✨ Brillo</button>
       <button class="tool-btn" id="btnNormal">⬜ Normal</button>
     </div>
 
-    <!-- Colores -->
-    <div class="tool-group" id="swatches">
-      <div style="width:16px;height:16px;background:#000;cursor:pointer;border:1px solid #888" onclick="setColor('#000')"></div>
-      <div style="width:16px;height:16px;background:#ff0080;cursor:pointer;border:1px solid #888" onclick="setColor('#ff0080')"></div>
-      <div style="width:16px;height:16px;background:#00aaff;cursor:pointer;border:1px solid #888" onclick="setColor('#00aaff')"></div>
-      <div style="width:16px;height:16px;background:#00ff88;cursor:pointer;border:1px solid #888" onclick="setColor('#00ff88')"></div>
+    <!-- Colores rápidos -->
+    <div class="tool-group">
+      <button class="tool-btn" style="color:#d32f2f" onclick="setColor('#d32f2f')">■</button>
+      <button class="tool-btn" style="color:#388e3c" onclick="setColor('#388e3c')">■</button>
+      <button class="tool-btn" style="color:#1976d2" onclick="setColor('#1976d2')">■</button>
+      <button class="tool-btn" style="color:#000" onclick="setColor('#000')">■</button>
     </div>
 
     <!-- Tamaño -->
     <div class="tool-group">
-      <input type="range" id="sizeSlider" min="12" max="60" value="20" style="width:60px">
-      <span id="sizeVal" style="font-size:0.8rem; font-weight:bold">20</span>
+      <input type="range" id="sizeSlider" min="12" max="50" value="18" style="width:50px">
+      <span id="sizeVal" style="font-size:0.75rem; font-weight:bold">18</span>
     </div>
   </div>
 
-  <div id="editor" contenteditable="true" spellcheck="false" data-placeholder="Escribe tu magia aquí..."></div>
+  <div id="editor" contenteditable="true" spellcheck="false" data-placeholder="Escribe aquí..."></div>
 
   <div class="status">
-    <span id="fontInfo">Listo</span>
-    <span>
-      <span id="charCount">0</span> caracteres | 
-      <span id="wordCount">0</span> palabras
-    </span>
+    <span id="fontInfo">Sistema listo</span>
+    <span><span id="charCount">0</span> caracteres</span>
   </div>
 </div>
 
@@ -227,24 +191,26 @@
   fontInput.onchange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const fontName = 'CustomFont_' + Math.floor(Math.random()*1000);
-    const fontData = await file.arrayBuffer();
-    const fontFace = new FontFace(fontName, fontData);
-    await fontFace.load();
-    document.fonts.add(fontFace);
-    editor.style.fontFamily = fontName;
-    document.getElementById('fontLabel').textContent = "Fuente: " + file.name;
-    showToast("Fuente importada: " + file.name);
+    try {
+      const fontName = 'CustomFont_' + Date.now();
+      const fontData = await file.arrayBuffer();
+      const fontFace = new FontFace(fontName, fontData);
+      await fontFace.load();
+      document.fonts.add(fontFace);
+      editor.style.fontFamily = fontName;
+      document.getElementById('fontLabel').textContent = file.name;
+      showToast("Fuente cargada");
+    } catch(err) { showToast("Error de fuente"); }
   };
 
-  // --- EFECTOS DE LUCES (RAINBOW & GLOW) ---
+  // --- EFECTOS (Optimizado para PC Vieja) ---
   function applyEffect(type) {
     const sel = window.getSelection();
-    if (sel.isCollapsed) { showToast("Selecciona texto primero"); return; }
+    if (sel.isCollapsed) return;
     const range = sel.getRangeAt(0);
     const text = range.toString();
-    const wrapper = document.createElement('span');
-    const colors = ['#ff0080', '#ff6600', '#ffdd00', '#00ff88', '#00aaff', '#8844ff'];
+    const fragment = document.createDocumentFragment();
+    const colors = ['#e91e63', '#fb8c00', '#fdd835', '#43a047', '#1e88e5', '#8e24aa'];
 
     for (let i = 0; i < text.length; i++) {
       const char = document.createElement('span');
@@ -252,13 +218,12 @@
       const color = colors[i % colors.length];
       char.style.color = color;
       if (type === 'glow') {
-        char.style.textShadow = `0 0 8px ${color}, 0 0 15px ${color}aa`;
-        char.style.fontWeight = 'bold';
+        char.className = 'glow-text';
       }
-      wrapper.appendChild(char);
+      fragment.appendChild(char);
     }
     range.deleteContents();
-    range.insertNode(wrapper);
+    range.insertNode(fragment);
   }
 
   document.getElementById('btnRainbow').onclick = () => applyEffect('rainbow');
@@ -271,40 +236,37 @@
   // --- UTILIDADES ---
   function setColor(c) { document.execCommand('foreColor', false, c); }
 
-  const sizeSlider = document.getElementById('sizeSlider');
-  sizeSlider.oninput = () => {
-    editor.style.fontSize = sizeSlider.value + 'px';
-    document.getElementById('sizeVal').textContent = sizeSlider.value;
+  document.getElementById('sizeSlider').oninput = (e) => {
+    editor.style.fontSize = e.target.value + 'px';
+    document.getElementById('sizeVal').textContent = e.target.value;
   };
 
   document.getElementById('fontSelector').onchange = (e) => {
     editor.style.fontFamily = e.target.value;
-    document.getElementById('fontLabel').textContent = "Fuente: " + e.target.value;
+    document.getElementById('fontLabel').textContent = e.target.value;
   };
 
   editor.oninput = () => {
-    const text = editor.innerText;
-    document.getElementById('charCount').textContent = text.length;
-    document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+    document.getElementById('charCount').textContent = editor.innerText.length;
   };
 
   function showToast(m) {
     const t = document.getElementById('toast');
     t.textContent = m; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
+    setTimeout(() => t.classList.remove('show'), 1500);
   }
 
   function copyText() {
     navigator.clipboard.writeText(editor.innerText);
-    showToast("¡Texto copiado!");
+    showToast("¡Copiado!");
   }
 
   function saveFile() {
-    const html = `<html><body style="background:#0e1217;color:white;font-family:sans-serif;padding:50px">${editor.innerHTML}</body></html>`;
+    const html = `<!DOCTYPE html><html><body style="padding:40px;font-family:sans-serif">${editor.innerHTML}</body></html>`;
     const blob = new Blob([html], {type:'text/html'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'mi_nota_magica.html';
+    a.download = 'nota.html';
     a.click();
   }
 </script>

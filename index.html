@@ -1,0 +1,327 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notepad Lite + Font Import ✨</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --win-bg: #f0f0f0;
+    --win-border: #a0a0a0;
+    --win-btn: linear-gradient(to bottom, #ffffff 0%, #e1e1e1 100%);
+    --accent: #0078d7;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: #d1d9e3;
+    background-image: linear-gradient(135deg, #d1d9e3 0%, #ebf2f9 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    color: #333;
+    padding: 10px;
+  }
+
+  .container {
+    width: min(900px, 98vw);
+    background: #ffffff;
+    border: 1px solid var(--win-border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .title {
+    background: linear-gradient(to bottom, #fcfcfc 0%, #e8e8e8 100%);
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--win-border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .toolbar {
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    padding: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .tool-group {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding-right: 8px;
+    border-right: 1px solid #ccc;
+  }
+  .tool-group:last-child { border-right: none; }
+
+  .tool-btn, .tool-select {
+    background: var(--win-btn);
+    border: 1px solid #adadad;
+    border-radius: 3px;
+    color: #333;
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+  .tool-btn:hover { background: #e5f1fb; border-color: #0078d7; }
+  .btn-import { background: #e1f5fe; border-color: #03a9f4; font-weight: bold; }
+
+  .swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.2);
+    cursor: pointer;
+  }
+
+  #editor {
+    width: 100%;
+    min-height: 450px;
+    padding: 25px;
+    outline: none;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #000;
+    overflow-y: auto;
+    background: #fff;
+  }
+  #editor:empty::before { content: attr(data-placeholder); color: #999; }
+
+  .status {
+    background: #f0f0f0;
+    border-top: 1px solid #ccc;
+    padding: 4px 10px;
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 0.7rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding: 10px 0;
+    width: min(900px, 98vw);
+  }
+  
+  .action-btn {
+    padding: 6px 15px;
+    border: 1px solid #adadad;
+    background: var(--win-btn);
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 1000;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="title">
+    <span>📝 Notepad Lite Professional</span>
+    <span id="currentFontName" style="font-weight:normal; opacity:0.6; font-size:0.75rem">Fuente: Segoe UI</span>
+  </div>
+  
+  <div class="toolbar">
+    <!-- Grupo de Importación -->
+    <div class="tool-group">
+      <button class="tool-btn btn-import" id="btnLoadFont" title="Cargar fuente .ttf, .otf o .woff">📂 Importar Fuente</button>
+      <input type="file" id="fontInput" accept=".ttf,.otf,.woff,.woff2" style="display:none">
+    </div>
+
+    <!-- Selector de fuentes del sistema -->
+    <div class="tool-group">
+      <select id="fontSelector" class="tool-select">
+        <option value="'Segoe UI', sans-serif">Segoe UI</option>
+        <option value="Arial, sans-serif">Arial</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="'Courier New', monospace">Courier New</option>
+        <option value="'Comic Sans MS', cursive">Comic Sans</option>
+      </select>
+    </div>
+
+    <div class="tool-group" id="swatches"></div>
+    
+    <div class="tool-group">
+      <button class="tool-btn" id="btnRainbow">🌈 Arcoíris</button>
+      <button class="tool-btn" id="btnNormal">⬜ Limpiar</button>
+    </div>
+
+    <div class="tool-group">
+      <input type="range" id="sizeSlider" min="12" max="60" value="18" style="width:70px">
+      <span id="sizeLabel" style="font-size:0.8rem; font-weight:bold; width:20px">18</span>
+    </div>
+  </div>
+
+  <div id="editor" contenteditable="true" spellcheck="false" data-placeholder="Escribe o pega tu texto aquí..."></div>
+
+  <div class="status">
+    <div id="fontInfo">Fuente actual: Predeterminada</div>
+    <div>
+      <span id="charCount">0 caracteres</span> | 
+      <span id="wordCount">0 palabras</span>
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="action-btn" id="btnCopy">Copiar Texto</button>
+  <button class="action-btn" id="btnDownload" style="font-weight:bold; border-color:var(--accent)">Guardar Nota</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const editor = document.getElementById('editor');
+  const fontInput = document.getElementById('fontInput');
+  const btnLoadFont = document.getElementById('btnLoadFont');
+  const fontSelector = document.getElementById('fontSelector');
+  const currentFontDisplay = document.getElementById('currentFontName');
+  const fontInfoBottom = document.getElementById('fontInfo');
+
+  // --- FUNCIÓN IMPORTAR FUENTE ---
+  btnLoadFont.addEventListener('click', () => fontInput.click());
+
+  fontInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Crear un nombre único para la fuente basado en el nombre del archivo
+    const fontName = file.name.split('.')[0].replace(/\s+/g, '_');
+    
+    try {
+      showToast("Cargando fuente...");
+      const reader = new FileReader();
+      
+      reader.onload = async (event) => {
+        const fontData = event.target.result;
+        // Crear la nueva interfaz de fuente
+        const fontFace = new FontFace(fontName, fontData);
+        
+        await fontFace.load();
+        document.fonts.add(fontFace);
+        
+        // Aplicar al editor
+        editor.style.fontFamily = fontName;
+        
+        // Actualizar UI
+        currentFontDisplay.textContent = `Fuente: ${file.name}`;
+        fontInfoBottom.textContent = `Fuente activa: ${file.name} (Importada)`;
+        showToast("✓ Fuente aplicada con éxito");
+      };
+      
+      reader.readAsArrayBuffer(file);
+    } catch (err) {
+      showToast("Error al cargar la fuente");
+      console.error(err);
+    }
+  });
+
+  // --- HERRAMIENTAS RESTANTES ---
+  fontSelector.addEventListener('change', () => {
+    editor.style.fontFamily = fontSelector.value;
+    currentFontDisplay.textContent = `Fuente: ${fontSelector.options[fontSelector.selectedIndex].text}`;
+    fontInfoBottom.textContent = `Fuente activa: Sistema`;
+  });
+
+  const sizeSlider = document.getElementById('sizeSlider');
+  const sizeLabel = document.getElementById('sizeLabel');
+  sizeSlider.addEventListener('input', () => {
+    sizeLabel.textContent = sizeSlider.value;
+    editor.style.fontSize = sizeSlider.value + 'px';
+  });
+
+  // Colores
+  const colors = ['#000', '#d32f2f', '#f57c00', '#388e3c', '#1976d2', '#7b1fa2'];
+  const swatchWrap = document.getElementById('swatches');
+  colors.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'swatch';
+    sw.style.background = c;
+    sw.onclick = () => document.execCommand('foreColor', false, c);
+    swatchWrap.appendChild(sw);
+  });
+
+  // Efecto Arcoíris
+  document.getElementById('btnRainbow').addEventListener('click', () => {
+    const sel = window.getSelection();
+    if (sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    const text = range.toString();
+    const span = document.createElement('span');
+    const rainbow = ['#e91e63', '#ff9800', '#ffeb3b', '#4caf50', '#2196f3', '#9c27b0'];
+    for (let i = 0; i < text.length; i++) {
+      const char = document.createElement('span');
+      char.textContent = text[i];
+      char.style.color = rainbow[i % rainbow.length];
+      span.appendChild(char);
+    }
+    range.deleteContents();
+    range.insertNode(span);
+    showToast("Efecto arcoíris aplicado");
+  });
+
+  document.getElementById('btnNormal').addEventListener('click', () => {
+    document.execCommand('removeFormat', false, null);
+    document.execCommand('foreColor', false, '#000000');
+    showToast("Formato limpiado");
+  });
+
+  // Contadores
+  editor.addEventListener('input', () => {
+    const text = editor.innerText;
+    document.getElementById('charCount').textContent = text.length + ' caracteres';
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    document.getElementById('wordCount').textContent = words + ' palabras';
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  document.getElementById('btnCopy').addEventListener('click', () => {
+    navigator.clipboard.writeText(editor.innerText);
+    showToast("Copiado al portapapeles");
+  });
+
+  document.getElementById('btnDownload').addEventListener('click', () => {
+    const blob = new Blob([editor.innerHTML], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'nota_rainbow.html';
+    a.click();
+  });
+</script>
+</body>
+</html>

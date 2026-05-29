@@ -3,272 +3,267 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notepad Lite - Legacy Edition ✨</title>
+<title>Notepad Ultra-Lite ✨</title>
 <style>
-  /* Reset básico */
+  /* RESET TOTAL PARA RENDIMIENTO */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --win-border: #8e8f91;
-    --win-btn: linear-gradient(to bottom, #fcfcfc 0%, #e1e1e1 100%);
-    --accent: #0078d7;
-  }
-
   body {
-    min-height: 100vh;
-    /* Gradiente estático que imita luces sin consumir CPU */
-    background: #0e1217 radial-gradient(circle at 0% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(136, 68, 255, 0.1) 0%, transparent 40%);
+    background-color: #1a1a1a; /* Color sólido, sin luces de fondo pesadas */
+    font-family: Tahoma, Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-    padding: 10px;
+    padding: 20px 10px;
+    color: #333;
   }
 
-  /* Contenedor optimizado (Sin Blur) */
+  /* CONTENEDOR PLANO (SIN SOMBRAS NI TRANSPARENCIAS) */
   .container {
-    width: min(900px, 98vw);
-    background: #ffffff; /* Sólido para máximo rendimiento */
-    border: 1px solid var(--win-border);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 850px;
+    background: #ffffff;
+    border: 2px solid #555;
     display: flex;
     flex-direction: column;
-    border-radius: 4px;
   }
 
-  /* Cabecera estilo Windows 7 */
-  .title {
-    background: linear-gradient(to bottom, #ebf2f9 0%, #d0def0 100%);
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #1e395b;
-    border-bottom: 1px solid #91a7c4;
+  /* CABECERA ESTILO CLÁSICO */
+  .title-bar {
+    background: #005a9e;
+    color: white;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
     display: flex;
     justify-content: space-between;
-    border-radius: 4px 4px 0 0;
   }
 
-  /* Barra de herramientas */
+  /* BARRA DE HERRAMIENTAS PLANA */
   .toolbar {
     background: #f0f0f0;
-    border-bottom: 1px solid #d1d1d1;
+    border-bottom: 1px solid #999;
     padding: 5px;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
   }
 
-  .tool-group {
-    display: flex; gap: 4px; align-items: center;
-    padding-right: 6px; border-right: 1px solid #ccc;
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding-right: 5px;
+    border-right: 1px solid #ccc;
   }
-  .tool-group:last-child { border-right: none; }
 
-  .tool-btn, .tool-select {
-    background: var(--win-btn);
-    border: 1px solid #adadad;
-    border-radius: 2px;
-    color: #333; font-size: 0.75rem;
-    padding: 3px 8px; cursor: pointer;
+  /* BOTONES ESTILO WINDOWS CLÁSICO */
+  button, select {
+    background: #e1e1e1;
+    border: 1px solid #777;
+    padding: 3px 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: Tahoma, sans-serif;
   }
-  .tool-btn:hover { border-color: #7eb4ea; background: #e5f1fb; }
+  button:hover { background: #d1d1d1; border-color: #333; }
+  button:active { background: #bbb; }
 
-  /* Editor de alto rendimiento */
+  /* COLORES SÓLIDOS */
+  .color-btn {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #333;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* EDITOR DE TEXTO (OPTIMIZADO) */
   #editor {
     width: 100%;
     min-height: 400px;
-    padding: 20px;
+    padding: 15px;
     outline: none;
     font-size: 18px;
-    line-height: 1.5;
-    background: #ffffff;
+    line-height: 1.4;
+    background: #fff;
     overflow-y: auto;
-    color: #000;
+    word-wrap: break-word;
   }
-  #editor:empty::before { content: attr(data-placeholder); color: #999; }
+  #editor:empty::before { content: "Escribe aquí..."; color: #aaa; }
 
-  /* Efectos visuales de texto (Sin filtros pesados) */
-  .glow-text {
-    text-shadow: 0 0 3px currentColor; /* Sombra ligera para PCs viejas */
+  /* ESTADO */
+  .status-bar {
+    background: #f0f0f0;
+    border-top: 1px solid #999;
+    padding: 2px 10px;
+    font-size: 11px;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* BOTONES DE ACCIÓN */
+  .footer-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-main {
+    padding: 8px 15px;
     font-weight: bold;
+    border: 2px solid #555;
   }
 
-  .status {
-    background: #f0f0f0; padding: 3px 10px;
-    display: flex; justify-content: space-between;
-    font-size: 0.7rem; color: #666;
-    border-top: 1px solid #ccc;
-  }
-
-  .actions {
-    display: flex; gap: 8px; justify-content: flex-end;
-    padding: 10px 0; width: min(900px, 98vw);
-  }
-
-  .action-btn {
-    padding: 5px 15px; border-radius: 2px;
-    border: 1px solid #adadad; background: var(--win-btn);
-    font-size: 0.8rem; cursor: pointer;
-  }
-  .btn-save { font-weight: bold; border-color: var(--accent); color: #005a9e; }
-
-  .toast {
-    position: fixed; bottom: 20px; background: #333; color: #fff;
-    padding: 6px 15px; border-radius: 2px; opacity: 0;
-    transition: opacity 0.2s; z-index: 100; font-size: 0.8rem;
-  }
-  .toast.show { opacity: 1; }
+  /* ESTILO PARA EL EFECTO BRILLO (MUY LIGERO) */
+  .glow { font-weight: bold; text-shadow: 1px 1px 2px #aaa; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="title">
-    <span>✨ Rainbow Notepad Lite</span>
-    <span id="fontLabel" style="font-weight:normal; font-size:0.7rem">Segoe UI</span>
+  <div class="title-bar">
+    <span>📝 NOTEPAD ULTRA-LITE</span>
+    <span id="fontDisplay">Segoe UI</span>
   </div>
-  
+
   <div class="toolbar">
-    <!-- Fuente -->
-    <div class="tool-group">
-      <button class="tool-btn" id="btnLoadFont">📂 Abrir Fuente</button>
-      <input type="file" id="fontInput" accept=".ttf,.otf,.woff" style="display:none">
-      <select id="fontSelector" class="tool-select">
-        <option value="'Segoe UI'">Segoe UI</option>
+    <!-- FUENTES -->
+    <div class="group">
+      <button onclick="document.getElementById('fileIn').click()">📂 Abrir Fuente</button>
+      <input type="file" id="fileIn" accept=".ttf,.otf" style="display:none" onchange="importFont(this)">
+      <select id="fontSelect" onchange="changeFont(this.value)">
+        <option value="Tahoma">Tahoma</option>
         <option value="Arial">Arial</option>
         <option value="'Courier New'">Courier</option>
-        <option value="'Comic Sans MS'">Comic Sans</option>
+        <option value="'Times New Roman'">Times</option>
       </select>
     </div>
 
-    <!-- Efectos -->
-    <div class="tool-group">
-      <button class="tool-btn" id="btnRainbow">🌈 Arcoíris</button>
-      <button class="tool-btn" id="btnGlow">✨ Brillo</button>
-      <button class="tool-btn" id="btnNormal">⬜ Normal</button>
+    <!-- TAMAÑO -->
+    <div class="group">
+      <span style="font-size:10px">Tamaño:</span>
+      <select onchange="changeSize(this.value)">
+        <option value="3">Pequeño</option>
+        <option value="4">Normal</option>
+        <option value="5" selected>Grande</option>
+        <option value="6">Extra</option>
+        <option value="7">Título</option>
+      </select>
     </div>
 
-    <!-- Colores rápidos -->
-    <div class="tool-group">
-      <button class="tool-btn" style="color:#d32f2f" onclick="setColor('#d32f2f')">■</button>
-      <button class="tool-btn" style="color:#388e3c" onclick="setColor('#388e3c')">■</button>
-      <button class="tool-btn" style="color:#1976d2" onclick="setColor('#1976d2')">■</button>
-      <button class="tool-btn" style="color:#000" onclick="setColor('#000')">■</button>
+    <!-- COLORES (CORREGIDOS) -->
+    <div class="group">
+      <button class="color-btn" style="background:#000" title="Negro" onclick="applyColor('#000000')"></button>
+      <button class="color-btn" style="background:#ff0000" title="Rojo" onclick="applyColor('#ff0000')"></button>
+      <button class="color-btn" style="background:#008000" title="Verde" onclick="applyColor('#008000')"></button>
+      <button class="color-btn" style="background:#0000ff" title="Azul" onclick="applyColor('#0000ff')"></button>
     </div>
 
-    <!-- Tamaño -->
-    <div class="tool-group">
-      <input type="range" id="sizeSlider" min="12" max="50" value="18" style="width:50px">
-      <span id="sizeVal" style="font-size:0.75rem; font-weight:bold">18</span>
+    <!-- EFECTOS ESPECIALES -->
+    <div class="group">
+      <button onclick="applyRainbow()">🌈 Arcoíris</button>
+      <button onclick="applyGlow()">✨ Brillo</button>
+      <button onclick="clearFormat()">⬜ Limpiar</button>
     </div>
   </div>
 
-  <div id="editor" contenteditable="true" spellcheck="false" data-placeholder="Escribe aquí..."></div>
+  <div id="editor" contenteditable="true" spellcheck="false"></div>
 
-  <div class="status">
-    <span id="fontInfo">Sistema listo</span>
-    <span><span id="charCount">0</span> caracteres</span>
+  <div class="status-bar">
+    <span id="count">0 caracteres</span>
+    <span>Ready</span>
   </div>
 </div>
 
-<div class="actions">
-  <button class="action-btn" onclick="copyText()">Copiar</button>
-  <button class="action-btn btn-save" onclick="saveFile()">Guardar HTML</button>
+<div class="footer-actions">
+  <button class="btn-main" onclick="copyAll()">COPIAR</button>
+  <button class="btn-main" onclick="saveHTML()" style="background:#005a9e; color:white">GUARDAR</button>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
   const editor = document.getElementById('editor');
-  
-  // --- IMPORTAR FUENTE ---
-  const fontInput = document.getElementById('fontInput');
-  document.getElementById('btnLoadFont').onclick = () => fontInput.click();
-  
-  fontInput.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-      const fontName = 'CustomFont_' + Date.now();
-      const fontData = await file.arrayBuffer();
-      const fontFace = new FontFace(fontName, fontData);
-      await fontFace.load();
-      document.fonts.add(fontFace);
-      editor.style.fontFamily = fontName;
-      document.getElementById('fontLabel').textContent = file.name;
-      showToast("Fuente cargada");
-    } catch(err) { showToast("Error de fuente"); }
-  };
 
-  // --- EFECTOS (Optimizado para PC Vieja) ---
-  function applyEffect(type) {
+  // Asegurar que el editor tenga el foco para que los colores funcionen
+  function applyColor(color) {
+    editor.focus();
+    document.execCommand('foreColor', false, color);
+  }
+
+  function changeSize(size) {
+    editor.focus();
+    document.execCommand('fontSize', false, size);
+  }
+
+  function changeFont(font) {
+    editor.style.fontFamily = font;
+    document.getElementById('fontDisplay').textContent = font;
+  }
+
+  function clearFormat() {
+    editor.focus();
+    document.execCommand('removeFormat', false, null);
+    document.execCommand('foreColor', false, '#000000');
+  }
+
+  // Importar fuente externa
+  async function importFont(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const fontName = 'CustomFont';
+    const data = await file.arrayBuffer();
+    const font = new FontFace(fontName, data);
+    await font.load();
+    document.fonts.add(font);
+    editor.style.fontFamily = fontName;
+    document.getElementById('fontDisplay').textContent = file.name;
+  }
+
+  // Efecto Arcoíris (Procesamiento simple)
+  function applyRainbow() {
     const sel = window.getSelection();
     if (sel.isCollapsed) return;
-    const range = sel.getRangeAt(0);
-    const text = range.toString();
-    const fragment = document.createDocumentFragment();
-    const colors = ['#e91e63', '#fb8c00', '#fdd835', '#43a047', '#1e88e5', '#8e24aa'];
-
+    const text = sel.toString();
+    const colors = ['#ff0000', '#ff8000', '#00aa00', '#0000ff', '#8000ff'];
+    let html = '';
     for (let i = 0; i < text.length; i++) {
-      const char = document.createElement('span');
-      char.textContent = text[i];
-      const color = colors[i % colors.length];
-      char.style.color = color;
-      if (type === 'glow') {
-        char.className = 'glow-text';
-      }
-      fragment.appendChild(char);
+      html += `<span style="color:${colors[i % colors.length]}">${text[i]}</span>`;
     }
-    range.deleteContents();
-    range.insertNode(fragment);
+    document.execCommand('insertHTML', false, html);
   }
 
-  document.getElementById('btnRainbow').onclick = () => applyEffect('rainbow');
-  document.getElementById('btnGlow').onclick = () => applyEffect('glow');
-  document.getElementById('btnNormal').onclick = () => {
-    document.execCommand('removeFormat');
-    document.execCommand('foreColor', false, '#000000');
-  };
-
-  // --- UTILIDADES ---
-  function setColor(c) { document.execCommand('foreColor', false, c); }
-
-  document.getElementById('sizeSlider').oninput = (e) => {
-    editor.style.fontSize = e.target.value + 'px';
-    document.getElementById('sizeVal').textContent = e.target.value;
-  };
-
-  document.getElementById('fontSelector').onchange = (e) => {
-    editor.style.fontFamily = e.target.value;
-    document.getElementById('fontLabel').textContent = e.target.value;
-  };
-
-  editor.oninput = () => {
-    document.getElementById('charCount').textContent = editor.innerText.length;
-  };
-
-  function showToast(m) {
-    const t = document.getElementById('toast');
-    t.textContent = m; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 1500);
+  // Efecto Brillo (Ligero)
+  function applyGlow() {
+    const sel = window.getSelection();
+    if (sel.isCollapsed) return;
+    const html = `<span class="glow" style="color:#ff0080">${sel.toString()}</span>`;
+    document.execCommand('insertHTML', false, html);
   }
 
-  function copyText() {
-    navigator.clipboard.writeText(editor.innerText);
-    showToast("¡Copiado!");
+  // Contador de caracteres
+  editor.addEventListener('input', () => {
+    document.getElementById('count').textContent = editor.innerText.length + " caracteres";
+  });
+
+  function copyAll() {
+    const range = document.createRange();
+    range.selectNode(editor);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    alert("¡Copiado!");
   }
 
-  function saveFile() {
-    const html = `<!DOCTYPE html><html><body style="padding:40px;font-family:sans-serif">${editor.innerHTML}</body></html>`;
-    const blob = new Blob([html], {type:'text/html'});
+  function saveHTML() {
+    const content = `<html><body style="font-family:sans-serif; padding:20px;">${editor.innerHTML}</body></html>`;
+    const blob = new Blob([content], {type: 'text/html'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'nota.html';
     a.click();
   }
 </script>
+
 </body>
 </html>
